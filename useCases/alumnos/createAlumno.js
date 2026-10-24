@@ -19,6 +19,7 @@ async function createAlumno(data, dao, event) {
     }
 
     const createdAlumno = await dao.save(data);
+    event.emit(EVENTS.ALUMNO_CREADO, createdAlumno);
 
     return createdAlumno;
 }

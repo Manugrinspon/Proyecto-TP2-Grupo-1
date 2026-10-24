@@ -5,6 +5,7 @@ async function deleteAlumno(id, dao) {
     if (!existingAlumno) {
         throw new AppError("Alumno no encontrado", 404);
     }
+    event.emit(EVENTS.ALUMNO_ELIMINADO, existingAlumno);
     return await dao.delete(id);
 }
 export default deleteAlumno;
