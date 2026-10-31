@@ -38,21 +38,21 @@ class AlumnosSequelizeDao {
         return alumno ? alumno.get({ plain: true }) : null;
     }
 
-    async save(alumno) {
-        const { id: _ignored, ...alumnoData } = alumno; // Exclude 'id' if present
+    async save(data) {
+        const { id: _ignored, ...alumnoData } = data; // Exclude 'id' if present
         const newAlumno = await AlumnosModel.create(alumnoData);
         return newAlumno.get({ plain: true });
     }
 
-    async update(id, alumno) {
-        const alumno = await AlumnosModel.findByPk(id);
-        if (!alumno) {
+    async update(id, changes) {
+        const alumnoUpdate = await AlumnosModel.findByPk(id);
+        if (!alumnoUpdate) {
             return null;
         }
 
-        const { id: _ignored, ...alumnoData } = alumno; // Exclude 'id' if present
-        await alumno.update(alumnoData);
-        return alumno.get({ plain: true });
+        const { id: _ignored, ...alumnoData } = changes; // Exclude 'id' if present
+        await alumnoUpdate.update(alumnoData);
+        return alumnoUpdate.get({ plain: true });
     }
 
     async delete(id) {

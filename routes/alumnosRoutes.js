@@ -1,11 +1,11 @@
 import express from "express";
-import validate from "../middlewares/validate.js";
-import { getAlumnosSchema, getAlumnoByIdSchema, createAlumnoSchema, updateAlumnoSchema, deleteAlumnoSchema } from "../schemas/alumnosSchemas.js";
+import validate, { validateQuery, validateParams} from "../middlewares/validate.js";
+import { queryAlumnoSchema, queryAlumnoByIdSchema, createAlumnoSchema, updateAlumnoSchema } from "../schemas/alumnoSchema.js";
 
 function createAlumnosRoutes(alumnosUseCases) {
     const router = express.Router();
 
-    router.get("/", validate(getAlumnosSchema), async (req, res, next) => {
+    router.get("/", validate(queryAlumnoSchema), async (req, res, next) => {
         try {
             const alumnos = await alumnosUseCases.getAlumnos(req.query);
             res.json(alumnos);
@@ -14,7 +14,7 @@ function createAlumnosRoutes(alumnosUseCases) {
         }
     });
 
-    router.get("/:id", validate(getAlumnoByIdSchema), async (req, res, next) => {
+    router.get("/:id", validate(queryAlumnoByIdSchema), async (req, res, next) => {
         try {
             const alumno = await alumnosUseCases.getAlumnoById(req.params.id);
             res.json(alumno);

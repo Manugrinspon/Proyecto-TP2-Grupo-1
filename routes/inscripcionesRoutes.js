@@ -1,6 +1,6 @@
 import express from "express";
 import validate from "../middlewares/validate.js";
-import { createInscripcionSchema, queryInscripcionSchema, inscripcionIdParamSchema } from "../schemas/inscripcionesSchemas.js";
+import { createInscripcionSchema, queryInscripcionSchema, inscripcionIdParamsSchema } from "../schemas/inscripcionSchema.js";
 
 function createInscripcionesRoutes(inscripcionesUseCases) {
     const router = express.Router();
@@ -14,7 +14,7 @@ function createInscripcionesRoutes(inscripcionesUseCases) {
         }
     });
 
-    router.get("/:id", validate(inscripcionIdParamSchema), async (req, res, next) => {
+    router.get("/:id", validate(inscripcionIdParamsSchema), async (req, res, next) => {
         try {
             const inscripcion = await inscripcionesUseCases.getInscripcionById(req.params.id);
             res.json(inscripcion);

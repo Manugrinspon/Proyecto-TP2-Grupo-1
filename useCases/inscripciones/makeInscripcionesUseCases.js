@@ -1,8 +1,6 @@
 import getInscripciones from "./getInscripciones.js";
 import getInscripcionById from "./getInscripcionById.js";
 import createInscripcion from "./createInscripcion.js";
-import updateInscripcion from "./updateInscripcion.js";
-import deleteInscripcion from "./deleteInscripcion.js";
 
 function makeInscripcionesUseCases(dao) {
     return {

@@ -1,6 +1,6 @@
-import AppError from "../../errors/AppError.js";
+import AppError from "../errors/AppError.js";
 
-class AlumnosController {
+class InscripcionesController {
     #useCases;
 
     constructor(useCases) {

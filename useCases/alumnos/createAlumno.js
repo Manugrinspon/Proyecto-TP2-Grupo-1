@@ -1,5 +1,5 @@
 import AppError from "../../errors/AppError.js";
-import EVENTS from "../../eventseventNames.js";
+import EVENTS from "../../events/eventNames.js";
 
 async function createAlumno(data, dao, event) {
 
