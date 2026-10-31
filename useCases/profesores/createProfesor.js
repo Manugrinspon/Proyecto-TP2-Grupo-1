@@ -9,7 +9,7 @@ async function createProfesor(data, dao, event) {
         }
     }
     const createdProfesor = await dao.save(data);
-    // event.emit(EVENTS.PROFESOR_CREADO, createdProfesor);
+    event.emit(EVENTS.PROFESOR_CREADO, createdProfesor);
     return createdProfesor;
 }
 export default createProfesor;
