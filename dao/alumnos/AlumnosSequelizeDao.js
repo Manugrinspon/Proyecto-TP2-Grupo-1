@@ -8,9 +8,9 @@ class AlumnosSequelizeDao {
     async init() {
         await sequelize.sync({alter: true});
 
-        const count = await AlumnosModel.count();
+        const count = await AlumnoModel.count();
         if (count === 0) {
-            await AlumnosModel.bulkCreate([
+            await AlumnoModel.bulkCreate([
                 { nombre: "Juan", apellido: "Pérez", email: "juan.perez@example.com", legajo: "12345" },
                 { nombre: "María", apellido: "Gómez", email: "maria.gomez@example.com", legajo: "67890" }
             ]);
@@ -18,7 +18,7 @@ class AlumnosSequelizeDao {
     }
     async getAll() {
         const where = {};
-        return await AlumnosModel.findAll({
+        return await AlumnoModel.findAll({
             attributes: ALUMNOS_ATTRIBUTES,
         });
     }
@@ -32,14 +32,14 @@ class AlumnosSequelizeDao {
     }
 
     async getById(id) {
-        const alumno = await AlumnosModel.findByPk(id, {
+        const alumno = await AlumnoModel.findByPk(id, {
             attributes: ALUMNOS_ATTRIBUTES,
         });
         return alumno ? alumno.get({ plain: true }) : null;
     }
 
     async getByLegajo(legajo) {
-        const alumno = await AlumnosModel.findOne({
+        const alumno = await AlumnoModel.findOne({
             where: { legajo },
             attributes: ALUMNOS_ATTRIBUTES,
         });
@@ -48,12 +48,12 @@ class AlumnosSequelizeDao {
 
     async save(data) {
         const { id: _ignored, ...alumnoData } = data; // Exclude 'id' if present
-        const newAlumno = await AlumnosModel.create(alumnoData);
+        const newAlumno = await AlumnoModel.create(alumnoData);
         return newAlumno.get({ plain: true });
     }
 
     async update(id, changes) {
-        const alumnoUpdate = await AlumnosModel.findByPk(id);
+        const alumnoUpdate = await AlumnoModel.findByPk(id);
         if (!alumnoUpdate) {
             return null;
         }
@@ -64,7 +64,7 @@ class AlumnosSequelizeDao {
     }
 
     async delete(id) {
-        const deletedRowsCount = await AlumnosModel.destroy({
+        const deletedRowsCount = await AlumnoModel.destroy({
             where: { id },
         });
         return deletedRowsCount > 0;
