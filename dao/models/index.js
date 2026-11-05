@@ -1,16 +1,16 @@
 import { sequelize } from '../../connection/index.js';
-import AlumnosModel from './AlumnoModel.js';
+import AlumnoModel from './AlumnoModel.js';
 import InscripcionModel from './InscripcionModel.js'; 
-import CursosModel from './CursoModel.js';
+import CursoModel from './CursoModel.js';
 import ProfesorModel from './ProfesorModel.js';
 
-AlumnosModel.belongsToMany(CursosModel, { through: InscripcionModel, foreignKey: 'alumnoId', otherKey: 'cursoId', as: 'cursos' });
-CursosModel.belongsToMany(AlumnosModel, { through: InscripcionModel, foreignKey: 'cursoId', otherKey: 'alumnoId', as: 'alumnos' });
+AlumnoModel.belongsToMany(CursoModel, { through: InscripcionModel, foreignKey: 'alumnoId', otherKey: 'cursoId', as: 'cursos' });
+CursoModel.belongsToMany(AlumnoModel, { through: InscripcionModel, foreignKey: 'cursoId', otherKey: 'alumnoId', as: 'alumnos' });
 
-InscripcionModel.belongsTo(AlumnosModel, { foreignKey: 'alumnoId', as: 'alumno' });
-InscripcionModel.belongsTo(CursosModel, { foreignKey: 'cursoId', as: 'curso' });
+InscripcionModel.belongsTo(AlumnoModel, { foreignKey: 'alumnoId', as: 'alumno' });
+InscripcionModel.belongsTo(CursoModel, { foreignKey: 'cursoId', as: 'curso' });
 
-ProfesorModel.hasMany(CursosModel, { foreignKey: 'profesorId', as: 'cursos' });
-CursosModel.belongsTo(ProfesorModel, { foreignKey: 'profesorId', as: 'profesor' });
+ProfesorModel.hasMany(CursoModel, { foreignKey: 'profesorId', as: 'cursos' });
+CursoModel.belongsTo(ProfesorModel, { foreignKey: 'profesorId', as: 'profesor' });
 
-export { sequelize, AlumnosModel, InscripcionModel, CursosModel, ProfesorModel };
+export { sequelize, AlumnoModel, InscripcionModel, CursoModel, ProfesorModel };

@@ -7,7 +7,7 @@ class IncripcionesMemoryDao {
     #alumnosDao;
     #cursosDao;
 
-    constructor(alumnosDao = new AlumnosMemoryDao(), cursosDao = new CursosMemoryDao()) {
+    constructor(alumnosDao = AlumnosMemoryDao, cursosDao = CursosMemoryDao) {
         this.#alumnosDao = alumnosDao;
         this.#cursosDao = cursosDao;
     }

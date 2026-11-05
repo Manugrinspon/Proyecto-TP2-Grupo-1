@@ -1,5 +1,5 @@
 import { Op } from "sequelize";
-import { sequelize, AlumnosModel } from "../models/index.js";
+import { sequelize, AlumnoModel } from "../models/index.js";
 
 const ALUMNOS_ATTRIBUTES = ["id", "nombre", "apellido", "email", "legajo"];
 

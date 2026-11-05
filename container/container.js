@@ -53,19 +53,19 @@ async function buildContainer() {
     const alumnosController = new AlumnosController(alumnosUseCases);
 
     const router = Router();
-    router.use("/alumnos", createAlumnosRouter(alumnosController));
+    router.use("/alumnos", createAlumnosRoutes(alumnosController));
 
     const cursosUseCases = makeCursosUseCases(cursosDao, events);
     const cursosController = new CursosController(cursosUseCases);
-    router.use("/cursos", createCursosRouter(cursosController));
+    router.use("/cursos", createCursosRoutes(cursosController));
 
     const inscripcionesUseCases = makeInscripcionesUseCases(inscripcionesDao, events);
-    const inscripcionesController = new inscripcionesController(inscripcionesUseCases);
-    router.use("/inscripciones", createInscripcionesRouter(inscripcionesController));
+    const inscripcionesController = new InscripcionesController(inscripcionesUseCases);
+    router.use("/inscripciones", createInscripcionesRoutes(inscripcionesController));
 
     const profesoresUseCases = makeProfesoresUseCases(profesoresDao, events);
-    const profesoresController = new profesoresController(profesoresUseCases);
-    router.use("/profesores", createProfesoresRouter(profesoresController));
+    const profesoresController = new ProfesoresController(profesoresUseCases);
+    router.use("/profesores", createProfesoresRoutes(profesoresController));
 
     return router;
 }

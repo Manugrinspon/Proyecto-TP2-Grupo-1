@@ -1,4 +1,4 @@
-import { sequelize, CursosModel } from "../models/index.js";
+import { sequelize, CursoModel } from "../models/index.js";
 
 const CURSOS_ATTRIBUTES = ["id", "nombre", "descripcion", "cupo_maximo", "cupo_disponible", "profesorId"];
 

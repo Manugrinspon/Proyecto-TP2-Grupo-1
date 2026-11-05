@@ -38,14 +38,6 @@ function createAlumnosRoutes(alumnosUseCases) {
             next(error);
         }
     });
-    router.delete("/:id", validate(deleteAlumnoSchema), async (req, res, next) => {
-        try {
-            await alumnosUseCases.deleteAlumno(req.params.id);
-            res.status(204).send();
-        } catch (error) {
-            next(error);
-        }
-    });
     return router;
 }
 

@@ -5,6 +5,8 @@ import InscripcionesSequelizeDao from './inscripciones/InscripcionesSequelizeDao
 import AlumnosMemoryDao from './alumnos/AlumnosMemoryDao.js';
 import CursosMemoryDao from './cursos/CursosMemoryDao.js';
 import InscripcionesMemoryDao from './inscripciones/InscripcionesMemoryDao.js';
+import ProfesoresSequelizeDao from './profesores/ProfesoresSequelizeDao.js';
+import ProfesoresMemoryDao from './profesores/ProfesoresMemoryDao.js';
 
 function getAlumnosDao() {
     if (PERSISTENCE_TYPE === "sequelize") {

@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../connection/index.js';
 
-class Profesor extends Model {}
+class ProfesorModel extends Model {}
 
 ProfesorModel.init(
   {
@@ -32,4 +32,4 @@ ProfesorModel.init(
     }
 );
 
-export default Profesor;
+export default ProfesorModel;
