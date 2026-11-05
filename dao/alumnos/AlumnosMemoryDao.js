@@ -56,6 +56,11 @@ class AlumnosMemoryDao {
         return alumnos.map((alumno) => ({ ...alumno }));
     }
 
+    async getByNombre(nombre) {
+        const alumno = this.#alumnos.find(alumno => alumno.nombre === nombre);
+        return alumno ? { ...alumno } : null;
+    }
+
     async getById(id) {
         const numericId = Number(id);
         const alumno = this.#alumnos.find(alumno => alumno.id === numericId);

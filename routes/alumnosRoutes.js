@@ -1,43 +1,21 @@
 import express from "express";
-import validate, { validateQuery, validateParams} from "../middlewares/validate.js";
+import validate, { validateQuery, validateParams } from "../middlewares/validate.js";
 import { queryAlumnoSchema, queryAlumnoByIdSchema, createAlumnoSchema, updateAlumnoSchema } from "../schemas/alumnoSchema.js";
 
-function createAlumnosRoutes(alumnosUseCases) {
+function createAlumnosRoutes(alumnosController) {
     const router = express.Router();
 
-    router.get("/", validate(queryAlumnoSchema), async (req, res, next) => {
-        try {
-            const alumnos = await alumnosUseCases.getAlumnos(req.query);
-            res.json(alumnos);
-        } catch (error) {
-            next(error);
-        }
-    });
+    // Usamos listAlumnos en lugar de list
+    router.get("/", validateQuery(queryAlumnoSchema), alumnosController.listAlumnos);
 
-    router.get("/:id", validate(queryAlumnoByIdSchema), async (req, res, next) => {
-        try {
-            const alumno = await alumnosUseCases.getAlumnoById(req.params.id);
-            res.json(alumno);
-        } catch (error) {
-            next(error);
-        }
-    });
-    router.post("/", validate(createAlumnoSchema), async (req, res, next) => {
-        try {
-            const createdAlumno = await alumnosUseCases.createAlumno(req.body);
-            res.status(201).json(createdAlumno);
-        } catch (error) {
-            next(error);
-        }
-    });
-    router.put("/:id", validate(updateAlumnoSchema), async (req, res, next) => {
-        try {
-            const updatedAlumno = await alumnosUseCases.updateAlumno(req.params.id, req.body);
-            res.json(updatedAlumno);
-        } catch (error) {
-            next(error);
-        }
-    });
+    router.get("/:id", validate(queryAlumnoByIdSchema), alumnosController.get);
+
+    router.post("/", validate(createAlumnoSchema), alumnosController.create);
+
+    router.put("/:id", validate(updateAlumnoSchema), alumnosController.update);
+
+    router.delete("/:id", alumnosController.delete);
+
     return router;
 }
 

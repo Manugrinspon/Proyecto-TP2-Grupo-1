@@ -23,6 +23,14 @@ class AlumnosSequelizeDao {
         });
     }
 
+    async getByNombre(nombre) {
+        const alumno = await AlumnoModel.findOne({
+            where: { nombre },
+            attributes: ALUMNOS_ATTRIBUTES,
+        });
+        return alumno ? alumno.get({ plain: true }) : null;
+    }
+
     async getById(id) {
         const alumno = await AlumnosModel.findByPk(id, {
             attributes: ALUMNOS_ATTRIBUTES,
