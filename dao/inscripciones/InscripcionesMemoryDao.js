@@ -1,5 +1,5 @@
-import AlumnosMemoryDao from "./AlumnosMemoryDao.js";
-import CursosMemoryDao from "../Cursos/CursosMemoryDao.js";
+import AlumnosMemoryDao from "../alumnos/AlumnosMemoryDao.js";
+import CursosMemoryDao from "../cursos/CursosMemoryDao.js";
 
 class IncripcionesMemoryDao { 
     #cursos = [];
