@@ -53,6 +53,16 @@ class ProfesoresMemoryDao {
         return profesor ? { ...profesor } : null;
     }
 
+    async getByNombre(nombre) {
+        const profesor = this.#profesores.find(prof => prof.nombre === nombre);
+        return profesor ? { ...profesor } : null;
+    }
+
+    async getByEspecialidad(especialidad) {
+        const profesor = this.#profesores.find(prof => prof.especialidad === especialidad);
+        return profesor ? { ...profesor } : null;
+    }
+
     async save(data) {
         const { id: _ignored, ...profesorData } = data;
         const newProfesor = { id: this.#nextId, ...profesorData };
