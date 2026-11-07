@@ -1,6 +1,6 @@
 import express from "express";
 import validate, { validateQuery, validateParams } from "../middlewares/validate.js";
-import { queryAlumnoSchema, queryAlumnoByIdSchema, createAlumnoSchema, updateAlumnoSchema } from "../schemas/alumnoSchema.js";
+import { queryAlumnoSchema, queryAlumnoByIdSchema, createAlumnoSchema, updateAlumnoSchema, alumnoIdParamsSchema } from "../schemas/alumnoSchema.js";
 
 function createAlumnosRoutes(alumnosController) {
     const router = express.Router();
@@ -8,14 +8,13 @@ function createAlumnosRoutes(alumnosController) {
     // Usamos listAlumnos en lugar de list
     router.get("/", validateQuery(queryAlumnoSchema), alumnosController.listAlumnos);
 
-    router.get("/:id", validate(queryAlumnoByIdSchema), alumnosController.get);
+    router.get("/:id", validateParams(queryAlumnoByIdSchema), alumnosController.get);
 
     router.post("/", validate(createAlumnoSchema), alumnosController.create);
 
-    router.put("/:id", validate(updateAlumnoSchema), alumnosController.update);
+    router.put("/:id", validateParams(alumnoIdParamsSchema), validate(updateAlumnoSchema), alumnosController.update);
 
-    router.delete("/:id", alumnosController.delete);
-
+    router.delete("/:id", validateParams(alumnoIdParamsSchema), alumnosController.delete);
     return router;
 }
 

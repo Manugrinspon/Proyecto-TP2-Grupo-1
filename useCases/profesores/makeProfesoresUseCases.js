@@ -4,13 +4,13 @@ import createProfesor from "./createProfesor.js";
 import updateProfesor from "./updateProfesor.js";
 import deleteProfesor from "./deleteProfesor.js";
 
-function makeProfesoresUseCases(dao) {
+function makeProfesoresUseCases(dao, event) {
     return {
         getProfesores: (filters) => getProfesores(filters, dao),
         getProfesorById: (id) => getProfesorById(id, dao),
-        createProfesor: (data, events) => createProfesor(data, dao, events),
-        updateProfesor: (id, data, events) => updateProfesor(id, data, dao, events),
-        deleteProfesor: (id, events) => deleteProfesor(id, dao, events)
+        createProfesor: (data) => createProfesor(data, dao, event),
+        updateProfesor: (id, data) => updateProfesor(id, data, dao, event),
+        deleteProfesor: (id) => deleteProfesor(id, dao, event)
     };
 }
 export default makeProfesoresUseCases;

@@ -6,26 +6,32 @@ const ALUMNOS_ATTRIBUTES = ["id", "nombre", "apellido", "email", "legajo"];
 class AlumnosSequelizeDao {
 
     async init() {
-        await sequelize.sync({alter: true});
+        await sequelize.sync();
 
         const count = await AlumnoModel.count();
         if (count === 0) {
             await AlumnoModel.bulkCreate([
-                { nombre: "Juan", apellido: "Pérez", email: "juan.perez@example.com", legajo: "12345" },
-                { nombre: "María", apellido: "Gómez", email: "maria.gomez@example.com", legajo: "67890" }
+                { nombre: "Manuel", apellido: "Grinspon", email: "manugrinspon@gmail.com", legajo: "12345" },
+                { nombre: "Lucas", apellido: "Miguez", email: "lucas.miguez@example.com", legajo: "67890" }
             ]);
         }
     }
-    async getAll() {
-        const where = {};
-        return await AlumnoModel.findAll({
-            attributes: ALUMNOS_ATTRIBUTES,
+    async getAll({ nombre, email, legajo, sort, page = 1, limit = 10 } = {}) {
+       const where = {};
+       if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+       if (email) where.email = email;
+       if (legajo) where.legajo = legajo;
+       const rows = await AlumnoModel.findAll({
+             where, attributes: ALUMNOS_ATTRIBUTES,
+             order: sort ? [[sort, "ASC"]] : [["id", "ASC"]],
+             limit, offset: (page - 1) * limit,
         });
-    }
+        return rows.map(r => r.get({ plain: true }));
+}
 
-    async getByNombre(nombre) {
+    async getByNombreYApellido(nombre, apellido) {
         const alumno = await AlumnoModel.findOne({
-            where: { nombre },
+            where: { nombre, apellido },
             attributes: ALUMNOS_ATTRIBUTES,
         });
         return alumno ? alumno.get({ plain: true }) : null;
@@ -41,6 +47,14 @@ class AlumnosSequelizeDao {
     async getByLegajo(legajo) {
         const alumno = await AlumnoModel.findOne({
             where: { legajo },
+            attributes: ALUMNOS_ATTRIBUTES,
+        });
+        return alumno ? alumno.get({ plain: true }) : null;
+    }
+
+    async getByEmail(email) {
+        const alumno = await AlumnoModel.findOne({
+            where: { email },
             attributes: ALUMNOS_ATTRIBUTES,
         });
         return alumno ? alumno.get({ plain: true }) : null;

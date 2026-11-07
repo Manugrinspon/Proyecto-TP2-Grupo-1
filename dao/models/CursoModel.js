@@ -13,6 +13,10 @@ CursosModel.init(
             type: DataTypes.STRING,
             allowNull: false
         },
+        descripcion: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         cupo_maximo: {
             type: DataTypes.INTEGER,
             allowNull: false

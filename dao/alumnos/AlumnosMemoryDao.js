@@ -3,8 +3,8 @@ class AlumnosMemoryDao {
     #nextId;
 
     constructor(initialAlumnos = [
-        { id: 1, nombre: 'Manuel Grinspon', email: 'manugrinspon@gmail.com', legajo: '12345' },
-        { id: 2, nombre: 'Lucas Miguez', email: 'lucas.miguez@gmail.com', legajo: '67890' },
+        { id: 1, nombre: 'Manuel', apellido: 'Grinspon', email: 'manugrinspon@gmail.com', legajo: '12345' },
+        { id: 2, nombre: 'Lucas', apellido: 'Miguez', email: 'lucas.miguez@gmail.com', legajo: '67890' },
     ]) {
         this.#alumnos = [...initialAlumnos];
         this.#updateNextId();
@@ -56,8 +56,8 @@ class AlumnosMemoryDao {
         return alumnos.map((alumno) => ({ ...alumno }));
     }
 
-    async getByNombre(nombre) {
-        const alumno = this.#alumnos.find(alumno => alumno.nombre === nombre);
+    async getByNombreYApellido(nombre, apellido) {
+        const alumno = this.#alumnos.find(alumno => alumno.nombre === nombre && alumno.apellido === apellido);
         return alumno ? { ...alumno } : null;
     }
 

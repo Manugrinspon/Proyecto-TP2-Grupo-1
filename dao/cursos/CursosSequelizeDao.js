@@ -4,7 +4,7 @@ const CURSOS_ATTRIBUTES = ["id", "nombre", "descripcion", "cupo_maximo", "cupo_d
 
 class CursosSequelizeDao {
     async init() {
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
 
         const count = await CursoModel.count();
         if (count === 0) {

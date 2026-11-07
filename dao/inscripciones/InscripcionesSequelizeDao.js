@@ -30,6 +30,15 @@ class InscripcionesSequelizeDao {
         return inscripcion ? inscripcion.get({ plain: true }) : null;
     }
 
+    async getByAlumnoIdAndCursoId(alumnoId, cursoId) {
+        const inscripcion = await InscripcionModel.findOne({
+            where: { alumnoId, cursoId },
+            attributes: INSCRIPCIONES_ATTRIBUTES,
+            include: INCLUDE,
+        });
+        return inscripcion ? inscripcion.get({ plain: true }) : null;
+    }
+
     async save(data) {
         const { id: _ignored, ...inscripcionData } = data;
         const newInscripcion = await InscripcionModel.create(inscripcionData);

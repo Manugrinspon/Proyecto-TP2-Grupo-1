@@ -9,8 +9,8 @@ function makeAlumnosUseCases(dao, event) {
         getAlumnos: (filters) => getAlumnos(filters, dao),
         getAlumnoById: (id) => getAlumnoById(id, dao),
         createAlumno: (data) => createAlumno(data, dao, event),
-        updateAlumno: (id, data, event) => updateAlumno(id, data, dao, event),
-        deleteAlumno: (id) => deleteAlumno(id, dao)
+        updateAlumno: (id, data) => updateAlumno(id, data, dao, event),
+        deleteAlumno: (id) => deleteAlumno(id, dao, event)
     };
 }
 

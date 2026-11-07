@@ -4,7 +4,7 @@ const PROFESORES_ATTRIBUTES = ["id", "nombre", "email", "especialidad"];
 
 class ProfesoresSequelizeDao {
     async init() {
-        await sequelize.sync({ alter: true });
+        await sequelize.sync();
 
         const count = await ProfesorModel.count();
         if (count === 0) {

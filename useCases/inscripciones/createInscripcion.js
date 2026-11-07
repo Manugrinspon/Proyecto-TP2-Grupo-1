@@ -1,29 +1,21 @@
 import AppError from "../../errors/AppError.js";
 import EVENTS from "../../events/eventNames.js";
 
-async function createInscripcion({ alumnoId, cursoId }, inscripcionesDao, alumnosDao, cursosDao, events) {
-    // Verificar si el alumno existe
-    const existingAlumno = await alumnosDao.getById(alumnoId);
-    if (!existingAlumno) {
-        throw new AppError(`No existe un alumno con el ID ${alumnoId}`, 404);
-    }
+async function createInscripcion({ alumnoId, cursoId }, inscDao, alumnosDao, cursosDao, events) {
+  const alumno = await alumnosDao.getById(alumnoId);
+  if (!alumno) throw new AppError("ALUMNO_NOT_FOUND", `No existe el alumno ${alumnoId}`, 404);
+  const curso = await cursosDao.getById(cursoId);
+  if (!curso) throw new AppError("CURSO_NOT_FOUND", `No existe el curso ${cursoId}`, 404);
 
-    // Verificar si el curso existe
-    const existingCurso = await cursosDao.getById(cursoId);
-    if (!existingCurso) {
-        throw new AppError(`No existe un curso con el ID ${cursoId}`, 404);
-    }
+  if (await inscDao.getByAlumnoIdAndCursoId(alumnoId, cursoId))
+    throw new AppError("INSCRIPCION_DUPLICADA", "El alumno ya está inscrito en el curso", 409);
+  if (curso.cupo_disponible <= 0)
+    throw new AppError("SIN_CUPO", "El curso no tiene cupo disponible", 409);
 
-    // Verificar si la inscripción ya existe
-    const existingInscripcion = await inscripcionesDao.getByAlumnoIdAndCursoId(alumnoId, cursoId);
-    if (existingInscripcion) {
-        throw new AppError(`El alumno con ID ${alumnoId} ya está inscrito en el curso con ID ${cursoId}`, 400);
-    }
-
-    // Crear la inscripción
-    const newInscripcion = await inscripcionesDao.save({ alumnoId, cursoId });
-    events.emit(EVENTS.INSCRIPCION_CREADA, newInscripcion);
-    return newInscripcion;
+  const nueva = await inscDao.save({ alumnoId, cursoId });
+  await cursosDao.update(cursoId, { cupo_disponible: curso.cupo_disponible - 1 });
+  events.emit(EVENTS.INSCRIPCION_CREADA, nueva);
+  return nueva;
 }
 
 export default createInscripcion;

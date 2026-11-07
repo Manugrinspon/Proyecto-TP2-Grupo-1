@@ -24,7 +24,7 @@ async function startServer() {
   app.use(errorHandler);
 
   app.listen(PORT, () => {
-    console.log(`Servidor Express (Clase 11) corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor Express corriendo en http://localhost:${PORT}`);
   });
 }
 
