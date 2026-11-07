@@ -1,0 +1,89 @@
+### ALUMNOS:
+
+### Obtener todos los alumnos:
+
+GET http://localhost:8000/alumnos
+
+#### Obtener un alumno por ID:
+GET http://localhost:8000/alumnos/1
+
+### Obtener alumno por ID (Inexistente):
+GET http://localhost:8000/alumnos/999
+
+#### Crear un nuevo alumno:
+POST http://localhost:8000/alumnos
+
+{ 
+    
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan.perez@example.com",
+    "legajo": "12345",
+}
+
+### Crear un nuevo alumno (con datos incompletos):
+POST http://localhost:8000/alumnos
+
+{ 
+    
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana.garcia",
+    "legajo": "67890"
+}
+
+### Crear un nuevo alumno (con legajo duplicado):
+POST http://localhost:8000/alumnos
+
+{ 
+    
+    "nombre": "Carlos",
+    "apellido": "López",
+    "email": "carlos.lopez@example.com",
+    "legajo": "12345"
+}
+
+### Actualizar un alumno existente:
+PUT http://localhost:8000/alumnos/1
+
+{ 
+    
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan.perez.updated@example.com",
+    "legajo": "12345"
+}
+
+### Actualizar un alumno inexistente:
+PUT http://localhost:8000/alumnos/999
+
+{ 
+    
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana.garcia.updated@example.com",
+    "legajo": "67890"
+}
+
+### Eliminar un alumno existente:
+DELETE http://localhost:8000/alumnos/3
+
+###Eliminar el Alumno nuevamente:
+DELETE http://localhost:8000/alumnos/3
+
+### Eliminar un alumno inexistente:
+DELETE http://localhost:8000/alumnos/999
+
+### Filtros de búsqueda:
+
+#### Buscar alumnos por nombre:
+GET http://localhost:8000/alumnos?nombre=Juan
+
+#### Buscar alumnos por apellido:
+GET http://localhost:8000/alumnos?apellido=Pérez
+
+#### Buscar alumnos por email:
+GET http://localhost:8000/alumnos?email=juan.perez@example.com
+
+#### Buscar alumnos por legajo:
+GET http://localhost:8000/alumnos?legajo=12345
