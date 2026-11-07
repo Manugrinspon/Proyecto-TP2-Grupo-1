@@ -15,7 +15,7 @@ class ProfesoresController {
         const { id } = req.params;
         const profesor = await this.#useCases.getProfesorById(id);
         if (!profesor) {
-            throw new AppError("Profesor no encontrado", 404);
+            throw new AppError("PROFESOR_NOT_FOUND", "Profesor no encontrado", 404);
         }
         res.json(profesor);
     };
@@ -31,7 +31,7 @@ class ProfesoresController {
         const data = req.body;
         const updatedProfesor = await this.#useCases.updateProfesor(id, data);
         if (!updatedProfesor) {
-            throw new AppError("Profesor no encontrado", 404);
+            throw new AppError("PROFESOR_NOT_FOUND", "Profesor no encontrado", 404);
         }
         res.json(updatedProfesor);
     };
@@ -40,7 +40,7 @@ class ProfesoresController {
         const { id } = req.params;
         await this.#useCases.deleteProfesor(id);
         if (!id) {
-            throw new AppError("Profesor no encontrado", 404);
+            throw new AppError("PROFESOR_NOT_FOUND", "Profesor no encontrado", 404);
         }
         res.status(204).send();
     };

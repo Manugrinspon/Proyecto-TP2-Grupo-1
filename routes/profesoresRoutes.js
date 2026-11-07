@@ -3,9 +3,8 @@ import validate, { validateQuery, validateParams } from "../middlewares/validate
 import { createProfesorSchema, updateProfesorSchema, queryProfesorSchema, profesorIdParamsSchema } from "../schemas/profesorSchema.js";
 import ProfesoresController from "../controllers/profesoresController.js";
 
-function createProfesoresRoutes(profesoresUseCases) {
+function createProfesoresRoutes(controller) {
     const router = express.Router();
-    const controller = new ProfesoresController(profesoresUseCases);
 
     router.get("/", validateQuery(queryProfesorSchema), controller.list);
     router.get("/:id", validateParams(profesorIdParamsSchema), controller.get);
