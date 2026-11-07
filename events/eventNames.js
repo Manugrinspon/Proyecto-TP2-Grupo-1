@@ -6,6 +6,8 @@ const EVENTS = {
     CURSO_ACTUALIZADO: "curso_actualizado",
     CURSO_ELIMINADO: "curso_eliminado",
     INSCRIPCION_CREADA: "inscripcion_creada",
+    INSCRIPCION_ACTUALIZADA: "inscripcion_actualizada",
+    INSCRIPCION_ELIMINADA: "inscripcion_eliminada",
     PROFESOR_CREADO: "profesor_creado",
     PROFESOR_ACTUALIZADO: "profesor_actualizado",
     PROFESOR_ELIMINADO: "profesor_eliminado",

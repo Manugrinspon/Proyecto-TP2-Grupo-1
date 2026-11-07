@@ -1,4 +1,5 @@
 import { sequelize, CursoModel } from "../models/index.js";
+import { Op } from "sequelize";
 
 const CURSOS_ATTRIBUTES = ["id", "nombre", "descripcion", "cupo_maximo", "cupo_disponible", "profesorId"];
 
@@ -15,17 +16,40 @@ class CursosSequelizeDao {
         }
     }
 
-    async getAll(filters = {}) {
-        return await CursoModel.findAll({
-            attributes: CURSOS_ATTRIBUTES,
-        });
+    async getAll({ page, limit, sort, nombre, ...rest } = {}) {
+    const where = { ...rest };
+    if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+
+    const options = { attributes: CURSOS_ATTRIBUTES, where };
+    if (sort) options.order = [[sort, "ASC"]];
+    if (limit) {
+        options.limit = limit;
+        options.offset = ((page || 1) - 1) * limit;
     }
+    return await CursoModel.findAll(options);
+}
 
     async getById(id) {
         const curso = await CursoModel.findByPk(id, {
             attributes: CURSOS_ATTRIBUTES,
         });
         return curso ? curso.get({ plain: true }) : null;
+    }
+
+    async getByProfesorId(profesorId) {
+        const cursos = await CursoModel.findAll({
+            where: { profesorId },
+            attributes: CURSOS_ATTRIBUTES,
+        });
+        return cursos.map(curso => curso.get({ plain: true }));
+    }
+
+    async getByNombre(nombre) {
+        const cursos = await CursoModel.findAll({
+            where: { nombre: { [op.like]: `%${nombre}%` } },
+            attributes: CURSOS_ATTRIBUTES,
+        });
+        return cursos.map(curso => curso.get({ plain: true }));
     }
 
     async save(data) {

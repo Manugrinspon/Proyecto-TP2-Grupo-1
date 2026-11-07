@@ -1,7 +1,6 @@
 import express from "express";
 import validate, { validateQuery, validateParams } from "../middlewares/validate.js";
 import { createProfesorSchema, updateProfesorSchema, queryProfesorSchema, profesorIdParamsSchema } from "../schemas/profesorSchema.js";
-import ProfesoresController from "../controllers/profesoresController.js";
 
 function createProfesoresRoutes(controller) {
     const router = express.Router();

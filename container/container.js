@@ -23,47 +23,35 @@ import { Router } from "express";
 async function buildContainer() {
 
     const alumnosDao = getAlumnosDao();
-
-    if (typeof alumnosDao.init === "function") {
-        await alumnosDao.init();
-    }
-
-    const cursosDao = getCursosDao();
-
-    if (typeof cursosDao.init === "function") {
-        await cursosDao.init();
-    }
-
-    const inscripcionesDao = getInscripcionesDao();
-
-    if (typeof inscripcionesDao.init === "function") {
-        await inscripcionesDao.init();
-    }
+    if (typeof alumnosDao.init === "function") await alumnosDao.init();
 
     const profesoresDao = getProfesoresDao();
+    if (typeof profesoresDao.init === "function") await profesoresDao.init();
 
-    if (typeof profesoresDao.init === "function") {
-        await profesoresDao.init();
-    }
+    const cursosDao = getCursosDao();
+    if (typeof cursosDao.init === "function") await cursosDao.init();
 
+    const inscripcionesDao = getInscripcionesDao();
+    if (typeof inscripcionesDao.init === "function") await inscripcionesDao.init();
+    
     const events = createEventBus();
     registerAlertListeners(events, getNotifier());
 
-    const alumnosUseCases = makeAlumnosUseCases(alumnosDao, events);
+    const alumnosUseCases = makeAlumnosUseCases(alumnosDao, inscripcionesDao, events);
     const alumnosController = new AlumnosController(alumnosUseCases);
 
     const router = Router();
     router.use("/alumnos", createAlumnosRoutes(alumnosController));
 
-    const cursosUseCases = makeCursosUseCases(cursosDao, events);
+    const cursosUseCases = makeCursosUseCases(cursosDao, profesoresDao, inscripcionesDao, events);
     const cursosController = new CursosController(cursosUseCases);
     router.use("/cursos", createCursosRoutes(cursosController));
 
-    const inscripcionesUseCases = makeInscripcionesUseCases(inscripcionesDao, events);
+    const inscripcionesUseCases = makeInscripcionesUseCases(inscripcionesDao, alumnosDao, cursosDao, events);
     const inscripcionesController = new InscripcionesController(inscripcionesUseCases);
     router.use("/inscripciones", createInscripcionesRoutes(inscripcionesController));
 
-    const profesoresUseCases = makeProfesoresUseCases(profesoresDao, events);
+    const profesoresUseCases = makeProfesoresUseCases(profesoresDao, cursosDao, events);
     const profesoresController = new ProfesoresController(profesoresUseCases);
     router.use("/profesores", createProfesoresRoutes(profesoresController));
 

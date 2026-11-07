@@ -7,13 +7,13 @@ async function createProfesor(data, dao, event) {
         const existingProfesorByNombre = await dao.getByNombre(data.nombre);
         const existingProfesorByEspecialidad = await dao.getByEspecialidad(data.especialidad);
         if (existingProfesorByEmail) {
-            throw new AppError(`Ya existe un profesor con el email ${data.email}`, 400);
+            throw new AppError("PROFESOR_EXISTENTE", `Ya existe un profesor con el email ${data.email}`, 400);
         }
         if (existingProfesorByNombre) {
-            throw new AppError(`Ya existe un profesor con el nombre ${data.nombre}`, 400);
+            throw new AppError("PROFESOR_EXISTENTE", `Ya existe un profesor con el nombre ${data.nombre}`, 400);
         }
         if (existingProfesorByEspecialidad) {
-            throw new AppError(`Ya existe un profesor con la especialidad ${data.especialidad}`, 400);
+            throw new AppError("PROFESOR_EXISTENTE", `Ya existe un profesor con la especialidad ${data.especialidad}`, 400);
         }
     }
     const createdProfesor = await dao.save(data);

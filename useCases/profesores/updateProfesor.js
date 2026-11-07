@@ -4,7 +4,7 @@ import EVENTS from "../../events/eventNames.js";
 async function updateProfesor(id, data, dao, event) {
     const existingProfesor = await dao.getById(id);
     if (!existingProfesor) {
-        throw new AppError("Profesor no encontrado", 404);
+        throw new AppError("PROFESOR_NOT_FOUND", "Profesor no encontrado", 404);
     }
     const updatedProfesor = await dao.update(id, data);
     event.emit(EVENTS.PROFESOR_ACTUALIZADO, updatedProfesor);

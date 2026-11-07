@@ -5,8 +5,7 @@ import { queryAlumnoSchema, queryAlumnoByIdSchema, createAlumnoSchema, updateAlu
 function createAlumnosRoutes(alumnosController) {
     const router = express.Router();
 
-    // Usamos listAlumnos en lugar de list
-    router.get("/", validateQuery(queryAlumnoSchema), alumnosController.listAlumnos);
+    router.get("/", validateQuery(queryAlumnoSchema), alumnosController.list);
 
     router.get("/:id", validateParams(queryAlumnoByIdSchema), alumnosController.get);
 

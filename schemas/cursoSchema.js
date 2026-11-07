@@ -8,22 +8,22 @@ const fields = {
     profesorId: z.number().int().positive("El ID del profesor debe ser un número entero positivo"),
 };
 
-const createCursoSchema = z.object(fields);
+const createCursoSchema = z.object(fields).refine(
+    (d) => d.cupo_disponible === undefined || d.cupo_disponible <= d.cupo_maximo,
+    { message: "El cupo disponible no puede superar al cupo máximo", path: ["cupo_disponible"] }
+);
 
-const updateCursoSchema = z.object({
-    ...fields,
-    id: z.number().int().positive("El ID debe ser un número entero positivo"),
-});
+const updateCursoSchema = z.object(fields);
 
 const queryCursoSchema = z.object({
     nombre: z.string().optional(),
-    profesorId: z.number().int().positive("El ID del profesor debe ser un número entero positivo").optional(),
-    page: z.number().int().positive("La página debe ser un número entero positivo").optional(),
-    limit: z.number().int().positive("El límite debe ser un número entero positivo").optional(),
+    profesorId: z.coerce.number().int().positive("El ID del profesor debe ser un número entero positivo").optional(),
+    page: z.coerce.number().int().positive("La página debe ser un número entero positivo").optional(),
+    limit: z.coerce.number().int().positive("El límite debe ser un número entero positivo").optional(),
 });
 
 const cursoIdParamsSchema = z.object({
-    id: z.number().int().positive("El ID debe ser un número entero positivo"),
+    id: z.coerce.number().int().positive("El ID debe ser un número entero positivo"),
 });
 
 export {

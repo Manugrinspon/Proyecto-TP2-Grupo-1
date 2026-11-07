@@ -46,6 +46,17 @@ if (sort) {
         return curso ? { ...curso } : null;
     }
 
+    async getByProfesorId(profesorId) {
+        const numericProfesorId = Number(profesorId);
+        const cursos = this.#cursos.filter(curso => curso.profesorId === numericProfesorId);
+        return cursos.map(curso => ({ ...curso }));
+    }
+
+    async getByNombre(nombre) {
+        const cursos = this.#cursos.filter(curso => curso.nombre.toLowerCase().includes(nombre.toLowerCase()));
+        return cursos.map(curso => ({ ...curso }));
+    }
+
     async save(data) {
         const { id: _ignored, ...cursoData } = data;
         const cupoDisponible = cursoData.cupo_disponible !== undefined ? cursoData.cupo_disponible : cursoData.cupo_maximo;

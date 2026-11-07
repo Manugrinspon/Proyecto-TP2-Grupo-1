@@ -4,13 +4,13 @@ import EVENTS from "../../events/eventNames.js";
 async function updateCurso(id, data, cursosDao, profesoresDao, events) {
     const existingCurso = await cursosDao.getById(id);
     if (!existingCurso) {
-        throw new AppError("Curso no encontrado", 404);
+        throw new AppError("NOT_FOUND", "Curso no encontrado", 404);
     }
 
     if (data.profesorId) {
         const existingProfesor = await profesoresDao.getById(data.profesorId);
         if (!existingProfesor) {
-             throw new AppError(`No existe un profesor con el ID ${data.profesorId}`, 404);
+             throw new AppError("NOT_FOUND", `No existe un profesor con el ID ${data.profesorId}`, 404);
         }
     }
 

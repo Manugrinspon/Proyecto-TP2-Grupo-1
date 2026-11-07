@@ -1,14 +1,14 @@
 import getInscripciones from "./getInscripciones.js";
 import getInscripcionById from "./getInscripcionById.js";
 import createInscripcion from "./createInscripcion.js";
+import deleteInscripcion from "./deleteInscripcion.js";
 
-function makeInscripcionesUseCases(dao) {
+function makeInscripcionesUseCases(inscDao, alumnosDao, cursosDao, events) {
     return {
-        getInscripciones: (filters) => getInscripciones(filters, dao),
-        getInscripcionById: (id) => getInscripcionById(id, dao),
-        createInscripcion: (data) => createInscripcion(data, dao),
-        updateInscripcion: (id, data, event) => updateInscripcion(id, data, dao, event),
-        deleteInscripcion: (id) => deleteInscripcion(id, dao)
+        getInscripciones: (filters) => getInscripciones(filters, inscDao),
+        getInscripcionById: (id) => getInscripcionById(id, inscDao),
+        createInscripcion: (data) => createInscripcion(data, inscDao, alumnosDao, cursosDao, events),
+        deleteInscripcion: (id) => deleteInscripcion(id, inscDao, cursosDao, events),
     };
 }
 

@@ -16,7 +16,7 @@ class InscripcionesController {
         const { id } = req.params;
         const inscripcion = await this.#useCases.getInscripcionById(id);
         if (!inscripcion) {
-            throw new AppError("Inscripción no encontrada", 404);
+            throw new AppError("NOT_FOUND", "Inscripción no encontrada", 404);
         }
         res.json(inscripcion);
     };
@@ -27,21 +27,11 @@ class InscripcionesController {
         res.status(201).json(createdInscripcion);
     };
 
-    update = async (req, res) => {
-        const { id } = req.params;
-        const data = req.body;
-        const updatedInscripcion = await this.#useCases.updateInscripcion(id, data);
-        if (!updatedInscripcion) {
-            throw new AppError("Inscripción no encontrada", 404);
-        }
-        res.json(updatedInscripcion);
-    };
-
     delete = async (req, res) => {
         const { id } = req.params;
         await this.#useCases.deleteInscripcion(id);
         if (!id) {
-            throw new AppError("Inscripción no encontrada", 404);
+            throw new AppError("NOT_FOUND", "Inscripción no encontrada", 404);
         }
         res.status(204).send();
     };

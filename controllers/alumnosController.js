@@ -8,7 +8,7 @@ class AlumnosController {
         this.#useCases = useCases;
     }
 
-    listAlumnos = async (req, res) => {
+    list = async (req, res) => {
         const alumnos = await this.#useCases.getAlumnos(req.query);
         res.json(alumnos);
     };
@@ -17,7 +17,7 @@ class AlumnosController {
         const { id } = req.params;
         const alumno = await this.#useCases.getAlumnoById(id);
         if (!alumno) {
-            throw new AppError("Alumno no encontrado", 404);
+            throw new AppError("ALUMNO_NOT_FOUND", "Alumno no encontrado", 404);
         }
         res.json(alumno);
     };
@@ -33,7 +33,7 @@ class AlumnosController {
         const data = req.body;
         const updatedAlumno = await this.#useCases.updateAlumno(id, data);
         if (!updatedAlumno) {
-            throw new AppError("Alumno no encontrado", 404);
+            throw new AppError("ALUMNO_NOT_FOUND", "Alumno no encontrado", 404);
         }
         res.json(updatedAlumno);
     };
@@ -42,7 +42,7 @@ class AlumnosController {
         const { id } = req.params;
         await this.#useCases.deleteAlumno(id);
         if (!id) {
-            throw new AppError("Alumno no encontrado", 404);
+            throw new AppError("ALUMNO_NOT_FOUND", "Alumno no encontrado", 404);
         }
         res.status(204).send();
     };

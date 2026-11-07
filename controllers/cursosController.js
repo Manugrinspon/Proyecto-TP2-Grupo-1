@@ -16,7 +16,7 @@ class CursosController {
         const { id } = req.params;
         const curso = await this.#useCases.getCursoById(id);
         if (!curso) {
-            throw new AppError("Curso no encontrado", 404);
+            throw new AppError("NOT_FOUND", "Curso no encontrado", 404);
         }
         res.json(curso);
     };
@@ -32,7 +32,7 @@ class CursosController {
         const data = req.body;
         const updatedCurso = await this.#useCases.updateCurso(id, data);
         if (!updatedCurso) {
-            throw new AppError("Curso no encontrado", 404);
+            throw new AppError("NOT_FOUND", "Curso no encontrado", 404);
         }
         res.json(updatedCurso);
     };
@@ -41,7 +41,7 @@ class CursosController {
         const { id } = req.params;
         await this.#useCases.deleteCurso(id);
         if (!id) {
-            throw new AppError("Curso no encontrado", 404);
+            throw new AppError("NOT_FOUND","Curso no encontrado", 404);
         }
         res.status(204).send();
     };

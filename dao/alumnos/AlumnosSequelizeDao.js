@@ -12,7 +12,7 @@ class AlumnosSequelizeDao {
         if (count === 0) {
             await AlumnoModel.bulkCreate([
                 { nombre: "Manuel", apellido: "Grinspon", email: "manugrinspon@gmail.com", legajo: "12345" },
-                { nombre: "Lucas", apellido: "Miguez", email: "lucas.miguez@example.com", legajo: "67890" }
+                { nombre: "Lucas", apellido: "Miguez", email: "lucas.miguez@gmail.com", legajo: "67890" }
             ]);
         }
     }
