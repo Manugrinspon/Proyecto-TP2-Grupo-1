@@ -16,6 +16,7 @@ const queryProfesorSchema = z.object({
     especialidad: z.string().optional(),
     page: z.coerce.number().int().positive("La página debe ser un número entero positivo").optional(),
     limit: z.coerce.number().int().positive("El límite debe ser un número entero positivo").optional(),
+    sort: z.enum(["nombre", "email", "especialidad"]).optional(),
 });
 
 const profesorIdParamsSchema = z.object({

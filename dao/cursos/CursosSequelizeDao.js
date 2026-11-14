@@ -16,18 +16,23 @@ class CursosSequelizeDao {
         }
     }
 
-    async getAll({ page, limit, sort, nombre, ...rest } = {}) {
-    const where = { ...rest };
-    if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+    async getAll({ nombre, profesorId, sort, page = 1, limit } = {}) {
+        const where = {};
+        if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+        if (profesorId) where.profesorId = profesorId;
 
-    const options = { attributes: CURSOS_ATTRIBUTES, where };
-    if (sort) options.order = [[sort, "ASC"]];
-    if (limit) {
-        options.limit = limit;
-        options.offset = ((page || 1) - 1) * limit;
-    }
-    return await CursoModel.findAll(options);
-}
+        const options = {
+            attributes: CURSOS_ATTRIBUTES,
+            where,
+            order: [[sort || "id", "ASC"]],
+        };
+        if (limit) {
+            options.limit = limit;
+            options.offset = (page - 1) * limit;
+        }
+        const cursos = await CursoModel.findAll(options);
+        return cursos.map(curso => curso.get({ plain: true }));
+   }
 
     async getById(id) {
         const curso = await CursoModel.findByPk(id, {
@@ -46,7 +51,7 @@ class CursosSequelizeDao {
 
     async getByNombre(nombre) {
         const cursos = await CursoModel.findAll({
-            where: { nombre: { [op.like]: `%${nombre}%` } },
+            where: { nombre: { [Op.like]: `%${nombre}%` } },
             attributes: CURSOS_ATTRIBUTES,
         });
         return cursos.map(curso => curso.get({ plain: true }));

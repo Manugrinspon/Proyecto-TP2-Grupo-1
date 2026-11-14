@@ -1,7 +1,7 @@
 import AppError from "../../errors/AppError.js";
 import EVENTS from "../../events/eventNames.js";
 
-async function createInscripcion({ alumnoId, cursoId }, inscDao, alumnosDao, cursosDao, events) {
+async function createInscripcion({ alumnoId, cursoId }, inscDao, alumnosDao, cursosDao, events, { umbralCupoBajo }) {
   const alumno = await alumnosDao.getById(alumnoId);
   if (!alumno) throw new AppError("ALUMNO_NOT_FOUND", `No existe el alumno ${alumnoId}`, 404);
   const curso = await cursosDao.getById(cursoId);
@@ -13,8 +13,11 @@ async function createInscripcion({ alumnoId, cursoId }, inscDao, alumnosDao, cur
     throw new AppError("SIN_CUPO", "El curso no tiene cupo disponible", 409);
 
   const nueva = await inscDao.save({ alumnoId, cursoId });
-  await cursosDao.update(cursoId, { cupo_disponible: curso.cupo_disponible - 1 });
-  events.emit(EVENTS.INSCRIPCION_CREADA, nueva);
+  const cursoActualizado = await cursosDao.update(cursoId, { cupo_disponible: curso.cupo_disponible - 1 });
+  events.emit(EVENTS.INSCRIPCION_CREADA, { inscripcion: nueva, alumno, curso: cursoActualizado });
+  if (cursoActualizado.cupo_disponible <= umbralCupoBajo) {
+    events.emit(EVENTS.CURSO_CUPO_BAJO, cursoActualizado);
+  }
   return nueva;
 }
 

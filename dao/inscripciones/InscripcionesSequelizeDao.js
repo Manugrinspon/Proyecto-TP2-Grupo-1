@@ -46,10 +46,11 @@ class InscripcionesSequelizeDao {
     }
 
     async delete(id) {
-        const deletedRowsCount = await InscripcionModel.destroy({
-            where: { id },
-        });
-        return deletedRowsCount > 0;
+        const inscripcion = await InscripcionModel.findByPk(id, { attributes: INSCRIPCIONES_ATTRIBUTES });
+        if (!inscripcion) return null;
+        const plainInscripcion = inscripcion.get({ plain: true });
+        await inscripcion.destroy();
+        return plainInscripcion;
     }
 
 }

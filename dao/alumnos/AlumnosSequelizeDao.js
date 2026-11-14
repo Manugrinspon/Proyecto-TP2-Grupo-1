@@ -16,18 +16,20 @@ class AlumnosSequelizeDao {
             ]);
         }
     }
-    async getAll({ nombre, email, legajo, sort, page = 1, limit = 10 } = {}) {
-       const where = {};
-       if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
-       if (email) where.email = email;
-       if (legajo) where.legajo = legajo;
-       const rows = await AlumnoModel.findAll({
-             where, attributes: ALUMNOS_ATTRIBUTES,
-             order: sort ? [[sort, "ASC"]] : [["id", "ASC"]],
-             limit, offset: (page - 1) * limit,
-        });
+    async getAll({ nombre, email, legajo, sort, page = 1, limit } = {}) {
+        const where = {};
+        if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+        if (email) where.email = email;
+        if (legajo) where.legajo = legajo;
+
+        const options = { where, attributes: ALUMNOS_ATTRIBUTES, order: [[sort || "id", "ASC"]] };
+        if (limit) {
+            options.limit = limit;
+            options.offset = (page - 1) * limit;
+        }
+        const rows = await AlumnoModel.findAll(options);
         return rows.map(r => r.get({ plain: true }));
-}
+    }
 
     async getByNombreYApellido(nombre, apellido) {
         const alumno = await AlumnoModel.findOne({
@@ -78,10 +80,11 @@ class AlumnosSequelizeDao {
     }
 
     async delete(id) {
-        const deletedRowsCount = await AlumnoModel.destroy({
-            where: { id },
-        });
-        return deletedRowsCount > 0;
+        const alumno = await AlumnoModel.findByPk(id);
+        if (!alumno) return null;
+        const plainAlumno = alumno.get({ plain: true });
+        await alumno.destroy();
+        return plainAlumno;
     }
 }
 

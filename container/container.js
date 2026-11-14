@@ -19,6 +19,7 @@ import createEventBus from "../events/eventBus.js";
 import { getNotifier } from "../notifications/notifierFactory.js";
 import registerAlertListeners from "../alerts/registerAlertListeners.js";
 import { Router } from "express";
+import { CUPO_BAJO_UMBRAL } from "../config/config.js";
 
 async function buildContainer() {
 
@@ -47,7 +48,7 @@ async function buildContainer() {
     const cursosController = new CursosController(cursosUseCases);
     router.use("/cursos", createCursosRoutes(cursosController));
 
-    const inscripcionesUseCases = makeInscripcionesUseCases(inscripcionesDao, alumnosDao, cursosDao, events);
+    const inscripcionesUseCases = makeInscripcionesUseCases(inscripcionesDao, alumnosDao, cursosDao, events, { umbralCupoBajo: CUPO_BAJO_UMBRAL });
     const inscripcionesController = new InscripcionesController(inscripcionesUseCases);
     router.use("/inscripciones", createInscripcionesRoutes(inscripcionesController));
 

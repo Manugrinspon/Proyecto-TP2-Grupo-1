@@ -20,6 +20,7 @@ const queryCursoSchema = z.object({
     profesorId: z.coerce.number().int().positive("El ID del profesor debe ser un número entero positivo").optional(),
     page: z.coerce.number().int().positive("La página debe ser un número entero positivo").optional(),
     limit: z.coerce.number().int().positive("El límite debe ser un número entero positivo").optional(),
+    sort: z.enum(["nombre", "cupo_disponible"]).optional(),
 });
 
 const cursoIdParamsSchema = z.object({
