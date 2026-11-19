@@ -4,6 +4,8 @@ import notFound from "./middlewares/notFound.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { PORT } from "./config/config.js";
 import buildContainer from "./container/container.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./docs/swagger.js";
 
 async function startServer() {
   const app = express();
@@ -11,6 +13,7 @@ async function startServer() {
   app.use(logger);
   app.use(express.json());
 
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument ));
   
   try {
     const router = await buildContainer();
@@ -25,6 +28,7 @@ async function startServer() {
 
   app.listen(PORT, () => {
     console.log(`Servidor Express corriendo en http://localhost:${PORT}`);
+    console.log(`Documentación Swagger disponible en http://localhost:${PORT}/api-docs`);
   });
 }
 
