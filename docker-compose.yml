@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PERSISTENCE_TYPE: sequelize
+      DB_STORAGE: /data/database.sqlite
+      NOTIFIER_TYPE: console
+    volumes:
+      - db-data:/data
+
+volumes:
+  db-data:
