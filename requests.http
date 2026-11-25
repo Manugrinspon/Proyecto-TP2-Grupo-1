@@ -1,89 +1,646 @@
-### ALUMNOS:
+@host = http://localhost:8000
 
-### Obtener todos los alumnos:
+###############################################################
+# 0. GENERALES
+###############################################################
 
-GET http://localhost:8000/alumnos
+### Swagger UI -> 200 (HTML)
+GET {{host}}/api-docs/
 
-#### Obtener un alumno por ID:
-GET http://localhost:8000/alumnos/1
+### Ruta inexistente -> 404 ROUTE_NOT_FOUND
+GET {{host}}/nada
 
-### Obtener alumno por ID (Inexistente):
-GET http://localhost:8000/alumnos/999
+### Método sin ruta -> 404 ROUTE_NOT_FOUND
+PATCH {{host}}/alumnos/1
 
-#### Crear un nuevo alumno:
-POST http://localhost:8000/alumnos
 
-{ 
-    
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan.perez@example.com",
-    "legajo": "12345",
+###############################################################
+# 1. PROFESORES   (iniciales: id 1 Juan Pérez/Backend, id 2 Ana Gómez/Frontend)
+###############################################################
+
+### Crear profesor -> 201 (queda con id 3)
+POST {{host}}/profesores
+Content-Type: application/json
+
+{
+  "nombre": "Laura Díaz",
+  "email": "laura.diaz@gmail.com",
+  "especialidad": "Bases de datos"
 }
 
-### Crear un nuevo alumno (con datos incompletos):
-POST http://localhost:8000/alumnos
+### Email duplicado -> 409 PROFESOR_EXISTENTE
+POST {{host}}/profesores
+Content-Type: application/json
 
-{ 
-    
-    "nombre": "Ana",
-    "apellido": "García",
-    "email": "ana.garcia",
-    "legajo": "67890"
+{
+  "nombre": "Otro Nombre",
+  "email": "juan.perez@gmail.com",
+  "especialidad": "Otra especialidad"
 }
 
-### Crear un nuevo alumno (con legajo duplicado):
-POST http://localhost:8000/alumnos
+### Nombre duplicado -> 409 PROFESOR_EXISTENTE
+POST {{host}}/profesores
+Content-Type: application/json
 
-{ 
-    
-    "nombre": "Carlos",
-    "apellido": "López",
-    "email": "carlos.lopez@example.com",
-    "legajo": "12345"
+{
+  "nombre": "Juan Pérez",
+  "email": "nuevo1@gmail.com",
+  "especialidad": "Otra especialidad"
 }
 
-### Actualizar un alumno existente:
-PUT http://localhost:8000/alumnos/1
+### Especialidad duplicada -> 409 PROFESOR_EXISTENTE
+POST {{host}}/profesores
+Content-Type: application/json
 
-{ 
-    
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan.perez.updated@example.com",
-    "legajo": "12345"
+{
+  "nombre": "Nombre Nuevo",
+  "email": "nuevo2@gmail.com",
+  "especialidad": "Backend"
 }
 
-### Actualizar un alumno inexistente:
-PUT http://localhost:8000/alumnos/999
+### Body vacío -> 400 VALIDATION_ERROR (con details)
+POST {{host}}/profesores
+Content-Type: application/json
 
-{ 
-    
-    "nombre": "Ana",
-    "apellido": "García",
-    "email": "ana.garcia.updated@example.com",
-    "legajo": "67890"
+{}
+
+### Email inválido -> 400 VALIDATION_ERROR
+POST {{host}}/profesores
+Content-Type: application/json
+
+{
+  "nombre": "Test",
+  "email": "no-es-un-email",
+  "especialidad": "Test"
 }
 
-### Eliminar un alumno existente:
-DELETE http://localhost:8000/alumnos/3
+### Listar -> 200
+GET {{host}}/profesores
 
-###Eliminar el Alumno nuevamente:
-DELETE http://localhost:8000/alumnos/3
+### Filtro por nombre (contiene) -> 200
+GET {{host}}/profesores?nombre=ana
 
-### Eliminar un alumno inexistente:
-DELETE http://localhost:8000/alumnos/999
+### Filtro por especialidad (contiene) -> 200
+GET {{host}}/profesores?especialidad=back
 
-### Filtros de búsqueda:
+### Filtro por email exacto -> 200
+GET {{host}}/profesores?email=ana.gomez@gmail.com
 
-#### Buscar alumnos por nombre:
-GET http://localhost:8000/alumnos?nombre=Juan
+### Ordenar -> 200
+GET {{host}}/profesores?sort=nombre
 
-#### Buscar alumnos por apellido:
-GET http://localhost:8000/alumnos?apellido=Pérez
+### Paginación: página 1 de 2 -> 200
+GET {{host}}/profesores?limit=2&page=1
 
-#### Buscar alumnos por email:
-GET http://localhost:8000/alumnos?email=juan.perez@example.com
+### Paginación: página 2 de 2 -> 200
+GET {{host}}/profesores?limit=2&page=2
 
-#### Buscar alumnos por legajo:
-GET http://localhost:8000/alumnos?legajo=12345
+### Orden + paginación -> 200
+GET {{host}}/profesores?sort=especialidad&limit=2&page=1
+
+### Query inválida (sort no permitido) -> 400
+GET {{host}}/profesores?sort=edad
+
+### Query inválida (limit 0) -> 400
+GET {{host}}/profesores?limit=0
+
+### Obtener por id -> 200
+GET {{host}}/profesores/1
+
+### Id inexistente -> 404
+GET {{host}}/profesores/999
+
+### Id inválido -> 400
+GET {{host}}/profesores/abc
+
+### Actualizar (parcial) -> 200
+PUT {{host}}/profesores/3
+Content-Type: application/json
+
+{
+  "especialidad": "DevOps"
+}
+
+### Actualizar inexistente -> 404
+PUT {{host}}/profesores/999
+Content-Type: application/json
+
+{
+  "especialidad": "DevOps"
+}
+
+### Actualizar con email inválido -> 400
+PUT {{host}}/profesores/3
+Content-Type: application/json
+
+{
+  "email": "no-es-un-email"
+}
+
+
+###############################################################
+# 2. ALUMNOS   (iniciales: id 1 Manuel Grinspon/12345, id 2 Lucas Miguez/67890)
+###############################################################
+
+### Crear alumno -> 201 (queda con id 3)
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Juan",
+  "apellido": "Pérez",
+  "email": "juan.perez@example.com",
+  "legajo": "54321"
+}
+
+### Crear otro alumno, para borrarlo después -> 201 (id 4)
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Para",
+  "apellido": "Borrar",
+  "email": "borrar@example.com",
+  "legajo": "11111"
+}
+
+### Mismo nombre y apellido -> 409 ALUMNO_EXISTENTE
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Manuel",
+  "apellido": "Grinspon",
+  "email": "otro1@example.com",
+  "legajo": "99991"
+}
+
+### Email duplicado -> 409 EMAIL_DUPLICADO
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Otro",
+  "apellido": "Alumno",
+  "email": "manugrinspon@gmail.com",
+  "legajo": "99992"
+}
+
+### Legajo duplicado -> 409 LEGAJO_DUPLICADO
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Otro",
+  "apellido": "Alumno2",
+  "email": "otro3@example.com",
+  "legajo": "12345"
+}
+
+### Body vacío -> 400 VALIDATION_ERROR
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{}
+
+### Email inválido -> 400 VALIDATION_ERROR
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{
+  "nombre": "Test",
+  "apellido": "Test",
+  "email": "no-es-un-email",
+  "legajo": "1"
+}
+
+### Listar -> 200
+GET {{host}}/alumnos
+
+### Filtro por nombre (contiene) -> 200
+GET {{host}}/alumnos?nombre=man
+
+### Filtro por email exacto -> 200
+GET {{host}}/alumnos?email=lucas.miguez@gmail.com
+
+### Filtro por legajo exacto -> 200
+GET {{host}}/alumnos?legajo=12345
+
+### Filtro sin resultados -> 200 con []
+GET {{host}}/alumnos?nombre=zzzz
+
+### Ordenar por legajo -> 200
+GET {{host}}/alumnos?sort=legajo
+
+### Paginación: página 2, de a 2 -> 200
+GET {{host}}/alumnos?limit=2&page=2
+
+### Orden + paginación -> 200
+GET {{host}}/alumnos?sort=nombre&limit=2&page=1
+
+### Query inválida (sort no permitido) -> 400
+GET {{host}}/alumnos?sort=edad
+
+### Query inválida (page no numérica) -> 400
+GET {{host}}/alumnos?page=abc
+
+### Query inválida (email de filtro mal formado) -> 400
+GET {{host}}/alumnos?email=noesemail
+
+### Obtener por id -> 200
+GET {{host}}/alumnos/1
+
+### Id inexistente -> 404 ALUMNO_NOT_FOUND
+GET {{host}}/alumnos/999
+
+### Id inválido -> 400
+GET {{host}}/alumnos/abc
+
+### Actualizar (parcial) -> 200
+PUT {{host}}/alumnos/3
+Content-Type: application/json
+
+{
+  "nombre": "Juan Carlos"
+}
+
+### Actualizar inexistente -> 404 ALUMNO_NOT_FOUND
+PUT {{host}}/alumnos/999
+Content-Type: application/json
+
+{
+  "nombre": "Nadie"
+}
+
+### Actualizar con email de otro alumno -> 409 EMAIL_DUPLICADO
+PUT {{host}}/alumnos/3
+Content-Type: application/json
+
+{
+  "email": "manugrinspon@gmail.com"
+}
+
+### Actualizar con legajo de otro alumno -> 409 LEGAJO_DUPLICADO
+PUT {{host}}/alumnos/3
+Content-Type: application/json
+
+{
+  "legajo": "12345"
+}
+
+### Actualizar con email inválido -> 400
+PUT {{host}}/alumnos/3
+Content-Type: application/json
+
+{
+  "email": "no-es-un-email"
+}
+
+
+###############################################################
+# 3. CURSOS   (iniciales: id 1 Node.js/cupo 30/prof 1, id 2 React/cupo 25/prof 2)
+###############################################################
+
+### Crear curso con cupo 3 -> 201 (id 3, cupo_disponible 3)
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Mini",
+  "descripcion": "Curso de prueba",
+  "cupo_maximo": 3,
+  "profesorId": 1
+}
+
+### Crear curso con cupo 1, para probar SIN_CUPO -> 201 (id 4)
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Un solo lugar",
+  "descripcion": "Cupo 1",
+  "cupo_maximo": 1,
+  "profesorId": 2
+}
+
+### Profesor inexistente -> 404 NOT_FOUND
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Sin profe",
+  "descripcion": "x",
+  "cupo_maximo": 10,
+  "profesorId": 99
+}
+
+### Faltan campos -> 400 VALIDATION_ERROR
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Incompleto",
+  "profesorId": 1
+}
+
+### Cupo máximo 0 -> 400
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Cupo cero",
+  "descripcion": "x",
+  "cupo_maximo": 0,
+  "profesorId": 1
+}
+
+### cupo_disponible mayor al máximo -> 400
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Cupo raro",
+  "descripcion": "x",
+  "cupo_maximo": 5,
+  "cupo_disponible": 10,
+  "profesorId": 1
+}
+
+### profesorId como texto -> 400
+POST {{host}}/cursos
+Content-Type: application/json
+
+{
+  "nombre": "Texto",
+  "descripcion": "x",
+  "cupo_maximo": 5,
+  "profesorId": "1"
+}
+
+### Listar -> 200
+GET {{host}}/cursos
+
+### Filtro por nombre (contiene) -> 200
+GET {{host}}/cursos?nombre=node
+
+### Filtro por profesor -> 200 (cursos 1 y 3)
+GET {{host}}/cursos?profesorId=1
+
+### Ordenar por cupo disponible -> 200
+GET {{host}}/cursos?sort=cupo_disponible
+
+### Paginación -> 200
+GET {{host}}/cursos?limit=2&page=2
+
+### Query inválida (sort no permitido) -> 400
+GET {{host}}/cursos?sort=precio
+
+### Query inválida (profesorId no numérico) -> 400
+GET {{host}}/cursos?profesorId=abc
+
+### Obtener por id -> 200
+GET {{host}}/cursos/1
+
+### Id inexistente -> 404 CURSO_NOT_FOUND
+GET {{host}}/cursos/999
+
+### Id inválido -> 400
+GET {{host}}/cursos/abc
+
+### Actualizar (el PUT exige todos los campos menos cupo_disponible) -> 200
+PUT {{host}}/cursos/3
+Content-Type: application/json
+
+{
+  "nombre": "Mini",
+  "descripcion": "Descripción actualizada",
+  "cupo_maximo": 3,
+  "profesorId": 1
+}
+
+### Actualizar curso inexistente -> 404 NOT_FOUND
+PUT {{host}}/cursos/999
+Content-Type: application/json
+
+{
+  "nombre": "X",
+  "descripcion": "x",
+  "cupo_maximo": 3,
+  "profesorId": 1
+}
+
+### Actualizar con profesor inexistente -> 404 NOT_FOUND
+PUT {{host}}/cursos/3
+Content-Type: application/json
+
+{
+  "nombre": "Mini",
+  "descripcion": "x",
+  "cupo_maximo": 3,
+  "profesorId": 99
+}
+
+### Actualizar con campos faltantes -> 400
+PUT {{host}}/cursos/3
+Content-Type: application/json
+
+{
+  "nombre": "Mini"
+}
+
+
+###############################################################
+# 4. INSCRIPCIONES   (mirá la terminal del servidor: acá salen las notificaciones)
+###############################################################
+
+### Inscribir alumno 1 en curso 3 -> 201 (id 1). Cupo 3->2: notifica "Nueva inscripción" y "Cupo bajo"
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "cursoId": 3
+}
+
+### Inscribir alumno 2 en curso 3 -> 201 (id 2). Cupo 2->1: vuelve a notificar las dos
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 2,
+  "cursoId": 3
+}
+
+### Inscripción duplicada -> 409 INSCRIPCION_DUPLICADA (no notifica)
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "cursoId": 3
+}
+
+### Llenar el curso 4 (cupo 1) -> 201 (id 3)
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "cursoId": 4
+}
+
+### Curso lleno -> 409 SIN_CUPO
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 2,
+  "cursoId": 4
+}
+
+### Alumno inexistente -> 404 ALUMNO_NOT_FOUND
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 99,
+  "cursoId": 3
+}
+
+### Curso inexistente -> 404 CURSO_NOT_FOUND
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 1,
+  "cursoId": 99
+}
+
+### Body vacío -> 400
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{}
+
+### Falta cursoId -> 400
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 1
+}
+
+### Ids como texto -> 400
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": "1",
+  "cursoId": "3"
+}
+
+### Id en cero -> 400
+POST {{host}}/inscripciones
+Content-Type: application/json
+
+{
+  "alumnoId": 0,
+  "cursoId": 3
+}
+
+### Listar (incluye alumno y curso) -> 200
+GET {{host}}/inscripciones
+
+### Filtrar por alumno -> 200
+GET {{host}}/inscripciones?alumnoId=1
+
+### Filtrar por curso -> 200
+GET {{host}}/inscripciones?cursoId=3
+
+### Filtrar por alumno y curso -> 200
+GET {{host}}/inscripciones?alumnoId=1&cursoId=3
+
+### Query inválida -> 400
+GET {{host}}/inscripciones?alumnoId=abc
+
+### Obtener por id -> 200
+GET {{host}}/inscripciones/1
+
+### Id inexistente -> 404 INSCRIPCION_NOT_FOUND
+GET {{host}}/inscripciones/999
+
+### Id inválido -> 400
+GET {{host}}/inscripciones/abc
+
+### Cancelar inscripción 2 -> 204 (devuelve el cupo)
+DELETE {{host}}/inscripciones/2
+
+### Verificar el cupo devuelto -> 200, cupo_disponible: 2
+GET {{host}}/cursos/3
+
+### Cancelar inexistente -> 404 INSCRIPCION_NOT_FOUND
+DELETE {{host}}/inscripciones/999
+
+### Cancelar con id inválido -> 400
+DELETE {{host}}/inscripciones/abc
+
+
+###############################################################
+# 5. REGLAS DE BORRADO
+###############################################################
+
+### Alumno con inscripciones -> 409 ALUMNO_CON_INSCRIPCIONES
+DELETE {{host}}/alumnos/1
+
+### Profesor con cursos -> 409 PROFESOR_CON_CURSOS
+DELETE {{host}}/profesores/1
+
+### Alumno sin inscripciones -> 204
+DELETE {{host}}/alumnos/4
+
+### Ya no existe -> 404
+GET {{host}}/alumnos/4
+
+### Profesor sin cursos -> 204
+DELETE {{host}}/profesores/3
+
+### Borrar inexistentes -> 404
+DELETE {{host}}/alumnos/999
+
+###
+DELETE {{host}}/profesores/999
+
+### Id inválido -> 400
+DELETE {{host}}/alumnos/abc
+
+### Borrar curso con inscripciones (cascada) -> 204
+DELETE {{host}}/cursos/3
+
+### Las inscripciones del curso 3 desaparecieron -> 200 con []
+GET {{host}}/inscripciones?cursoId=3
+
+### La inscripción 1 ya no existe -> 404
+GET {{host}}/inscripciones/1
+
+### Curso ya borrado -> 404 CURSO_NOT_FOUND
+DELETE {{host}}/cursos/3
+
+### Curso inexistente -> 404
+DELETE {{host}}/cursos/999
+
+### Liberar al alumno 1: cancelar su última inscripción (curso 4) -> 204
+DELETE {{host}}/inscripciones/3
+
+### Ahora el alumno 1 sí se puede borrar -> 204
+DELETE {{host}}/alumnos/1
+
+
+###############################################################
+# 6. ERROR 500
+###############################################################
+
+### JSON mal formado -> 500 INTERNAL_ERROR (ver nota abajo)
+POST {{host}}/alumnos
+Content-Type: application/json
+
+{ "nombre": "Juan",
