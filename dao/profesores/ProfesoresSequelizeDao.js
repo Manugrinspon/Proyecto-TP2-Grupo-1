@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { sequelize, ProfesorModel } from "../models/index.js";
 
 const PROFESORES_ATTRIBUTES = ["id", "nombre", "email", "especialidad"];
@@ -15,11 +16,23 @@ class ProfesoresSequelizeDao {
         }
     }
 
-    async getAll(filters = {}) {
-        return await ProfesorModel.findAll({
+    async getAll({ nombre, email, especialidad, sort, page = 1, limit } = {}) {
+        const where = {};
+        if (nombre) where.nombre = { [Op.like]: `%${nombre}%` };
+        if (email) where.email = email;
+        if (especialidad) where.especialidad = { [Op.like]: `%${especialidad}%` };
+
+        const options = {
             attributes: PROFESORES_ATTRIBUTES,
-            where: filters
-        });
+            where,
+            order: [[sort || "id", "ASC"]],
+        };
+        if (limit) {
+            options.limit = limit;
+            options.offset = (page - 1) * limit;
+        }
+        const profesores = await ProfesorModel.findAll(options);
+        return profesores.map(profesor => profesor.get({ plain: true }));
     }
 
     async getById(id) {
@@ -32,6 +45,22 @@ class ProfesoresSequelizeDao {
     async getByEmail(email) {
         const profesor = await ProfesorModel.findOne({
             where: { email },
+            attributes: PROFESORES_ATTRIBUTES,
+        });
+        return profesor ? profesor.get({ plain: true }) : null;
+    }
+
+    async getByNombre(nombre) {
+        const profesor = await ProfesorModel.findOne({
+            where: { nombre },
+            attributes: PROFESORES_ATTRIBUTES,
+        });
+        return profesor ? profesor.get({ plain: true }) : null;
+    }
+
+    async getByEspecialidad(especialidad) {
+        const profesor = await ProfesorModel.findOne({
+            where: { especialidad },
             attributes: PROFESORES_ATTRIBUTES,
         });
         return profesor ? profesor.get({ plain: true }) : null;
