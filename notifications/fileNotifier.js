@@ -1,12 +1,10 @@
 import { appendFile } from "node:fs/promises";
-
-
-const LOG_PATH = process.env.NOTIFICATIONS_LOG_PATH || "notifications.log";
+import { NOTIFICATIONS_LOG_PATH } from "../config/config.js";
 
 const fileNotifier = {
   async notify({ subject, body }) {
     const line = `${new Date().toISOString()} | ${subject} | ${body}\n`;
-    await appendFile(LOG_PATH, line);
+    await appendFile(NOTIFICATIONS_LOG_PATH, line);
   },
 };
 
